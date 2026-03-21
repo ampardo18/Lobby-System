@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+
 import { useNavigate } from "react-router-dom"
 
 
@@ -37,7 +37,7 @@ function Register(){
                     className="flex-1 border rounded p-1"
                 />
             </div>
-            <button className="bg-blue-400 font-bold cursor-pointer hover:bg-blue-300 w-1/2 rounded-lg mx-auto" onClick={() => navigate("/login")}>Register</button>
+            <button className="main-buttons" onClick={() => navigate("/login", { replace: true })}>Register</button>
         </form>
     )
 }

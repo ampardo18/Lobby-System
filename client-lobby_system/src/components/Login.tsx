@@ -1,5 +1,6 @@
-import React, { useState } from "react"
+
 import { Link, useNavigate } from "react-router-dom"
+import '../styles/global.css'
 
 
 function Login(){
@@ -21,7 +22,7 @@ function Login(){
                     className="flex-1 border rounded p-1"
                 />
             </div>
-            <button className="bg-blue-400 font-bold cursor-pointer hover:bg-blue-300 w-1/2 rounded-lg mx-auto" onClick={() => navigate("/lobby")}>Sign in</button>
+            <button className="main-buttons" onClick={() => navigate("/lobby", { replace: true })}>Sign in</button>
             <Link to="/register" className="text-blue-500 underline text-center">Don't have an account? Register Now</Link>
             
         </form>

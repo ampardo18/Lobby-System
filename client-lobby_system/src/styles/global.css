@@ -1,1 +1,6 @@
 @import "tailwindcss";
+/*Buttons that are found throughout the app that will have same styling (i.e., sign-in and register buttons)*/
+.main-buttons{
+    @apply bg-blue-400 font-bold cursor-pointer w-1/2 h-10 rounded-lg transform transition-transform duration-200 hover:scale-105 mx-auto
+}
+
