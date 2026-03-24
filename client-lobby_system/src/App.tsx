@@ -9,7 +9,8 @@ function App() {
         initial={{ opacity: 0}}
         animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
-      >Welcome to Battleships
+        className="app-title"
+      >Welcome to the Battleship Game
       </motion.h1>
 
       <motion.button 
