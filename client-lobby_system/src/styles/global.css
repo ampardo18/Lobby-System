@@ -7,3 +7,7 @@
 .app-title{
     @apply font-bold text-xl text-center p-4
 }
+
+.profile-button{
+    @apply w-10 h-10 cursor-pointer border-3 border-black rounded-full p-1 transform transition-transform duration-200 hover:scale-105
+}

@@ -9,6 +9,7 @@ const { expressjwt } = require('express-jwt')
 const jwt = require('jsonwebtoken')
 const User = require('./models/users')
 const sequelize = require('./config/database')
+const { Server } = require('socket.io')
 
 app.use(cors())
 app.use(express.json())
@@ -70,6 +71,20 @@ app.post("/register", async (req, res) => {
   } catch(error){
     console.error('Error during sign up', error)
     res.status(500)
+  }
+})
+
+app.get('/user', async (req, res) => {
+  try{
+    const user = await User.findByPk(req.auth.id, {
+      attributes: ['firstname', 'lastname', 'email']
+    })
+    if(!user){
+      return res.status(404).json({ message: 'User not found' })
+    }
+    res.json(user)
+  }catch(error){
+    res.status(500).json({ message: 'Server error' })
   }
 })
 

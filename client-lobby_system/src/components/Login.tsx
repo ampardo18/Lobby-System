@@ -48,28 +48,28 @@ function Login(){
     return(
         <div>
             <h1 className="app-title">Welcome to the Battleship Game</h1>
-            <form onSubmit={handleLogin} className="mx-auto max-w-md flex flex-col space-y-4 p-4 bg-gray-200 rounded-lg w-full shadow-md">
+            <form onSubmit={handleLogin} className="flex flex-col space-y-4 p-4 bg-gray-200 rounded-lg shadow-md max-w-md w-full mx-auto">
                 <h2 className="text-l font-bold text-center">Sign-in</h2>
-                <div className="flex items-center space-x-4 space-y-4">
-                    <label>Email : </label>
+                <div className="flex flex-col">
+                    <label>Email</label>
                     <input 
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="flex-1 border rounded p-1"
+                        className="w-full border rounded p-1"
                     />
                 </div>
-                <div className="flex items-center space-x-4 space-y-4">
-                    <label>Password : </label>
+                <div className="flex flex-col">
+                    <label>Password</label>
                     <input
                         type="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
                         required
-                        className="flex-1 border rounded p-1"
+                        className="w-full border rounded p-1"
                     />
                 </div>
                 <button type="submit" className="main-buttons">Sign in</button>
