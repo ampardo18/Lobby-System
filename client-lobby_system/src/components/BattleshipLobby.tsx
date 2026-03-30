@@ -47,14 +47,13 @@ function Battleship(){
 
     return(
         <div>
-            
             <header className="bg-blue-300">
                 <div className="flex items-center justify-between p-4"> 
                     <h1 className="app-title">Battleship Games</h1>
                     <div className="relative" ref={dropdownref}>
                         <button className="profile-button" onClick={() => setIsOpen(!isOpen)}><img src={profileIcon}/></button>
                         {isOpen && (
-                            <div className="absolute right-5 mt-2 w-64 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <div className="user-menu">
                                 <div className="flex flex-col items-center space-y-1">
                                     <p className="text-sm font-semibold text-gray-900 mt-2">{user?.email}</p>
                                     <img src={profileIcon} className="w-10 h-10 border-3 rounded-full"/>
@@ -68,7 +67,18 @@ function Battleship(){
                     </div>
                 </div>
             </header>
-
+            <div className="flex justify-between gap-12 p-4 w-3/4 mx-auto">
+                <div className="bg-gray-400 w-1/2 h-32 text-center p-4">
+                    <h1 className="text-2xl font-bold mb-4">Game Creation</h1>
+                    <div className="flex gap-4">
+                        <button className="main-buttons" onClick={() => navigate('/game')}>Create Game</button>
+                        <button className="main-buttons">Join Game</button>
+                    </div>
+                </div>
+                <div className="bg-gray-400 w-2/3 h-32 text-center p-4">
+                    <h1 className="text-2xl font-bold">Active Games</h1>
+                </div>
+            </div>
         </div>
    
     )

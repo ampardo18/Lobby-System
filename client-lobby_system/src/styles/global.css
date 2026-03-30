@@ -11,3 +11,7 @@
 .profile-button{
     @apply w-10 h-10 cursor-pointer border-3 border-black rounded-full p-1 transform transition-transform duration-200 hover:scale-105
 }
+
+.user-menu{
+    @apply absolute right-5 mt-2 w-64 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-2 ring-black focus:outline-none
+}
