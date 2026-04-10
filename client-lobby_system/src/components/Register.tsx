@@ -9,7 +9,7 @@ function Register(){
     const [formData, setFormData] = useState({
         firstname: '',
         lastname: '',
-        email: '',
+        username: '',
         password: ''
     })
 
@@ -32,7 +32,7 @@ function Register(){
                 body: JSON.stringify({
                     firstname: formData.firstname,
                     lastname: formData.lastname,
-                    email: formData.email,
+                    username: formData.username,
                     password: formData.password
                 })
             })
@@ -76,11 +76,11 @@ function Register(){
                     />
                 </div>
                 <div className="flex flex-col">
-                    <label>Email</label>
+                    <label>Username</label>
                     <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
+                        type="text"
+                        name="username"
+                        value={formData.username}
                         onChange={handleChange}
                         required
                         className="w-full border rounded p-1"

@@ -17,6 +17,7 @@ ReactDOM.createRoot(root!).render(
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />}></Route>
       <Route path="/game" element={<Game />}></Route>
+      <Route path="/game/:id" element={<Game />}></Route>
       <Route path="/lobby" element={<Battleship />}></Route>
     </Routes>
   </BrowserRouter>

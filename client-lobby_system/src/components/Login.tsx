@@ -6,7 +6,7 @@ import '../styles/global.css'
 function Login(){
     const navigate = useNavigate()
      const [formData, setFormData] = useState({
-            email: '',
+            username: '',
             password: ''
         })
     
@@ -27,7 +27,7 @@ function Login(){
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        email: formData.email,
+                        username: formData.username,
                         password: formData.password
                     })
                 })
@@ -51,11 +51,11 @@ function Login(){
             <form onSubmit={handleLogin} className="flex flex-col space-y-4 p-4 bg-gray-200 rounded-lg shadow-md max-w-md w-full mx-auto">
                 <h2 className="text-l font-bold text-center">Sign-in</h2>
                 <div className="flex flex-col">
-                    <label>Email</label>
+                    <label>Username</label>
                     <input 
-                        type="email"
-                        name="email"
-                        value={formData.email}
+                        type="text"
+                        name="username"
+                        value={formData.username}
                         onChange={handleChange}
                         required
                         className="w-full border rounded p-1"
