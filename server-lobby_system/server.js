@@ -31,7 +31,7 @@ io.use((socket, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return next(new Error('Authentication error'))
-    socket.user = decoded
+    socket.user = { userID: decoded.id }
     next()
   })
 })
@@ -81,7 +81,7 @@ app.post("/register", async (req, res) => {
       username,
       password: hashedPassword
     })
-    res.json({ message: 'Sign up is successful', userId: newUser.id })
+    res.json({ message: 'Sign up is successful', userID: newUser.id })
   } catch(error){
     console.error('Error during sign up', error)
     res.status(500)
