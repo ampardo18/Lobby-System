@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../config/database')
-const { nanoid } = require('nanoid')
+const { customAlphabet } = require('nanoid')
+
+const code = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6)
  
 const Games = sequelize.define('Games', {
     gameID: {
@@ -28,7 +30,7 @@ const Games = sequelize.define('Games', {
     code: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: () => nanoid(6),
+        defaultValue: () => code(),
         unique: true
     }
 })

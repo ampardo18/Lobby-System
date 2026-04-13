@@ -25,13 +25,15 @@ app.use(
 
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token
+  console.log('Current token: ', token)
   if (!token) {
-    return next(new Error('Authentication error'))
+    return next(new Error('Authentication error: no token provided'))
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return next(new Error('Authentication error'))
     socket.user = { userID: decoded.id }
+    console.log('Authentication successful: ', decoded.id)
     next()
   })
 })
@@ -57,7 +59,7 @@ app.post('/login', async (req, res, next) => {
       return res.json({ message: 'Invalid password' })
     }
     const token = await generateJWT(user)
-    res.json({ message: 'Login successful', token })
+    res.json({ message: 'Login successful: ', token })
     
   }catch(error){
     console.error({ message: 'error during login', error })

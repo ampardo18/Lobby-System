@@ -35,7 +35,7 @@ function Login(){
                 const data = await response.json()
                 if(response.ok){
                     localStorage.setItem("token", data.token)
-                    console.log(data.token)
+                    console.log(data.message, data.token)
                     navigate('/lobby', {replace: true})
                 }else{
                     alert(data.message || "log-in failed")
@@ -73,6 +73,11 @@ function Login(){
                     />
                 </div>
                 <button type="submit" className="main-buttons">Sign in</button>
+                <div className="flex items-center my-2">
+                    <div className="flex-1 h-px bg-black" />
+                    <span className="px-2 text-sm text-black">or</span>
+                    <div className="flex-1 h-px bg-black" />
+                </div>
                 <Link to="/register" className="text-blue-500 underline text-center">Don't have an account? Register Now</Link>      
             </form>
         </div>

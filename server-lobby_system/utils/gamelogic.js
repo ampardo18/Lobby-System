@@ -1,4 +1,3 @@
-const {v4: uuidv4} = require('uuid')
 const Games = require('../models/games')
 const Users = require('../models/users')
 
@@ -7,7 +6,7 @@ module.exports = function(io){
     async function broadcastGameList(){
         const games = await Games.findAll()
         const gameList = games.map(game => ({
-            id: game.gameID,
+            gameID: game.gameID,
             player1: game.player1,
             player2: game.player2,
             status: game.status,
@@ -17,9 +16,15 @@ module.exports = function(io){
         io.emit('listGames', gameList)
     }
     io.on('connection', (socket) => {
+        
+        console.log('User connected: ', socket.user.userID)
+        socket.on('disconnect', () => {
+            console.log('User disconnected: ', socket.user.userID)
+        })
+
         socket.on('createGame', async (callback) => {
             try{
-                const user = await Users.findById(socket.user.userID)
+                const user = await Users.findByPk(socket.user.userID)
                 const game = await Games.create({
                     player1: user.username,
                     status: 'Matchmaking'
@@ -35,13 +40,14 @@ module.exports = function(io){
 
         socket.on('joinGameMatchmaking', async (callback) => {
             try{
-                const user = await Users.findById(socket.user.userID)
-                const game = await Games.findOne({ where: {status: 'Matchmaking'}})
+                const user = await Users.findByPk(socket.user.userID)
+                const openGames = await Games.findAll({ where: { status: 'Matchmaking', player2: null } })
 
-                if(!game || game.player2){
+                if (!openGames.length) {
                     return callback({success: false, message: 'No games available'})
                 }
 
+                const game = openGames[Math.floor(Math.random() * openGames.length)]
                 game.player2 = user.username
                 game.status = 'Playing'
                 game.turn = 'player 1'
@@ -64,7 +70,7 @@ module.exports = function(io){
                     return callback({ success: false, message: 'Game not available'})
                 }
 
-                const user = await Users.findById(socket.user.userID)
+                const user = await Users.findByPk(socket.user.userID)
                 game.player2 = user.username
                 game.status = 'Playing'
                 game.turn = 'player 1'
