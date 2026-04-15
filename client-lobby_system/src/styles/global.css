@@ -13,5 +13,13 @@
 }
 
 .user-menu{
-    @apply absolute right-5 mt-2 w-64 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-2 ring-black focus:outline-none
+    @apply absolute right-5 mt-2 w-64 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-2 ring-black focus:outline-none z-50
+}
+
+.game-list-button{
+    @apply flex flex-col justify-between items-center bg-gray-200 rounded-2xl p-3 cursor-pointer transform transition-transform duration-200 hover:scale-105
+}
+
+.active-game-list{
+    @apply bg-gray-400 w-2/3 max-h-64 text-center p-4 rounded-2xl space-y-4 overflow-y-hidden hover:overflow-y-auto
 }

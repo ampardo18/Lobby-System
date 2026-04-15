@@ -3,14 +3,16 @@ import { useEffect, useState, useRef } from 'react'
 import '../styles/global.css'
 import profileIcon from '../assets/profile-icon.png'
 import { io } from 'socket.io-client'
+import { ArrowRightLeft } from "lucide-react"
 
 
 function Battleship(){
     const navigate = useNavigate()
     const [isProfileOpen, setIsProfileOpen] = useState(false)
     const [ isJoinOpen, setIsJoinOpen ] = useState(false)
+    const [ isPreviousGames, setIsPreviousGames ] = useState(false)
     const [ user, setUser ] = useState<{firstname: string; lastname: string; username: string} | null>(null)
-    const [ games, setGames ] = useState<{gameID: string; player1: string; player2: string; turn: string; status: string | null}[]>([])
+    const [ games, setGames ] = useState<{gameID: string; player1: string; player2: string; turn: string; status: string; winner: string| null}[]>([])
     const [ gameCode, setGameCode ] = useState('')
     const profileRef = useRef<HTMLDivElement | null>(null)
     const joinRef = useRef<HTMLDivElement | null>(null)
@@ -64,7 +66,7 @@ function Battleship(){
     }, [])
 
     useEffect(() => {
-        socketRef.current?.on('listGames', (gamesList: {gameID: string; player1: string; player2: string; turn: string; status: string | null}[]) => {
+        socketRef.current?.on('listGames', (gamesList: {gameID: string; player1: string; player2: string; turn: string; status: string; winner: string | null}[]) => {
             setGames(gamesList)
         })
         return () => {
@@ -113,6 +115,10 @@ function Battleship(){
             navigate(`/game/${response.gameID}`)
         })
     }
+
+    const activeGames = user ? games.filter(game => (game.player1 === user.username || game.player2 === user.username) && game.status !== 'Finished') : []
+    const previousGames = user ? games.filter(game => (game.player1 === user.username || game.player2 === user.username) && game.status === 'Finished' ) : []
+    const displayedGames = isPreviousGames ? previousGames : activeGames
 
     return(
         <div>
@@ -165,14 +171,30 @@ function Battleship(){
                         )}
                     </div>
                 </div>
-                <div className="bg-gray-400 w-2/3 h-32 text-center p-4 rounded-2xl">
-                    <h1 className="text-2xl font-bold">Active Games</h1>
-                    {games.length === 0 ? (
-                        <p>No active games</p>
+                <div className="active-game-list">
+                    <div className="relative items-center justify-center flex">
+                        <h1 className="text-2xl font-bold">{ isPreviousGames ? 'Your Previous Games' : 'Your Active Games'}</h1>
+                        <button className="absolute right-0 top-0 cursor-pointer" onClick={() => setIsPreviousGames(!isPreviousGames)}> <ArrowRightLeft /> </button>
+                    </div>
+                    {displayedGames.length === 0 ? (
+                        <p> { isPreviousGames ? 'No previous games' : 'No active games' } </p>
                     ) : (
-                        games.map(game => (
-                            <div key={game.gameID} className="flex flex-col justify-between items-center bg-gray-200 rounded">
-                                <span>{game.player1} vs {game.player2} - Status: {game.status} - Current Turn: {game.turn}</span>
+                        displayedGames.map(game => (
+                            <div key={game.gameID} 
+                            className='game-list-button'
+                            onClick={() => navigate(`/game/${game.gameID}`)}
+                            role='button'
+                            tabIndex={0}
+                            >
+                                {game.status === 'Matchmaking' ? (
+                                    <span>{game.player1} currently in {game.status}</span>
+                                ) :  game.status === 'Finished' ? (
+                                    <span
+                                        className={` font-bold ${game.winner === user?.username ? 'bg-green-200' : 'bg-red-200'}`}
+                                    >{game.player1} vs {game.player2} - Status: {game.status} - Winner: {game.winner === user?.username ? 'Win' : 'Lost'}</span>
+                                ):(
+                                    <span>{game.player1} vs {game.player2} - Status: {game.status} - Current Turn: {game.turn}</span>
+                                )}
                             </div>
                         ))
                     )}

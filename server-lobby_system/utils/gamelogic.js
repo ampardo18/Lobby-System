@@ -3,21 +3,28 @@ const Users = require('../models/users')
 
 module.exports = function(io){
 
-    async function broadcastGameList(){
+    async function broadcastGameList(targetSocket = null){
         const games = await Games.findAll()
         const gameList = games.map(game => ({
             gameID: game.gameID,
             player1: game.player1,
             player2: game.player2,
             status: game.status,
+            winner: game.winner,
             turn: game.turn
+        
         }))
 
-        io.emit('listGames', gameList)
+        if (targetSocket) {
+            targetSocket.emit('listGames', gameList)
+        } else {
+            io.emit('listGames', gameList)
+        }
     }
     io.on('connection', (socket) => {
         
         console.log('User connected: ', socket.user.userID)
+        broadcastGameList(socket)
         socket.on('disconnect', () => {
             console.log('User disconnected: ', socket.user.userID)
         })

@@ -27,6 +27,10 @@ const Games = sequelize.define('Games', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    winner: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     code: {
         type: DataTypes.STRING,
         allowNull: false,
