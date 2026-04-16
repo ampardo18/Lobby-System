@@ -7,6 +7,7 @@ function Game(){
     const { id } = useParams()
     const navigate = useNavigate()
     const [ gameDetails, setGameDetails ] = useState<{player1: string; player2: string; status: string; code: string} | null>(null)
+    const [ selected, setSelected ] = useState<number[]>([])
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -14,7 +15,6 @@ function Game(){
         const socket = io(import.meta.env.VITE_PUBLIC_HOST, {
             auth: { token }
         })
-        console.log('gameid',id)
         socket.emit('getGameDetails', id, (response: {success: boolean; gameDetails?: typeof gameDetails; message?: string}) => {
             if(response.success && response.gameDetails){
                 setGameDetails(response.gameDetails)
@@ -23,6 +23,14 @@ function Game(){
             }
         })
     }, [id])
+
+    const toggleCell = (index: number) => {
+        setSelected(prev => 
+            prev.includes(index)
+            ? prev.filter(i => i !== index)
+            : [...prev, index]
+        )
+    }
 
     return(
         <div className="flex flex-col h-screen overflow-hidden">
@@ -35,7 +43,9 @@ function Game(){
                     {Array.from({length: 5 * 5}).map((_, index) => (
                         <div 
                             key={index}
-                            className="w-16 h-16 bg-blue-200 border border-blue-400"
+                            className={`grid-design ${selected.includes(index) ? "bg-blue-400 ": "bg-blue-200 hover:bg-blue-300"}`}
+                            onClick={() => toggleCell(index)}
+                            role="button"
                         />
                     ))}
                 </div> 

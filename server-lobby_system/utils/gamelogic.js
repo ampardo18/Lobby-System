@@ -72,7 +72,7 @@ module.exports = function(io){
 
         socket.on('joinGameCode', async (code, callback) => {
             try{   
-                const game = await Games.findOne({where: {gameJoinCode: code, status: 'Matchmaking'}})
+                const game = await Games.findOne({where: {code: code, status: 'Matchmaking'}})
                 if(!game || game.player2){
                     return callback({ success: false, message: 'Game not available'})
                 }

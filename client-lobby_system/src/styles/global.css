@@ -27,3 +27,7 @@
 .submit-play-button{
     @apply bg-blue-400 font-bold cursor-pointer h-10 w-1/4 rounded-2xl transition-transform duration-200 hover:scale-105 mx-auto
 }
+
+.grid-design{
+    @apply w-16 h-16 border border-blue-400 cursor-pointer hover:bg-blue-300
+}
