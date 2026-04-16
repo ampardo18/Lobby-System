@@ -1,7 +1,7 @@
 @import "tailwindcss";
 /*Buttons that are found throughout the app that will have same styling (i.e., sign-in and register buttons)*/
 .main-buttons{
-    @apply bg-blue-400 font-bold cursor-pointer w-1/2 h-10 rounded-lg transform transition-transform duration-200 hover:scale-105 mx-auto
+    @apply bg-blue-400 font-bold cursor-pointer w-1/2 h-10 rounded-2xl transform transition-transform duration-200 hover:scale-105 mx-auto
 }
 
 .app-title{
@@ -22,4 +22,8 @@
 
 .active-game-list{
     @apply bg-gray-400 w-2/3 max-h-64 text-center p-4 rounded-2xl space-y-4 overflow-y-hidden hover:overflow-y-auto
+}
+
+.submit-play-button{
+    @apply bg-blue-400 font-bold cursor-pointer h-10 w-1/4 rounded-2xl transition-transform duration-200 hover:scale-105 mx-auto
 }

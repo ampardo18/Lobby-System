@@ -9,8 +9,7 @@ const { expressjwt } = require('express-jwt')
 const jwt = require('jsonwebtoken')
 const User = require('./models/users')
 const sequelize = require('./config/database')
-const http = require('http');
-const { FORCE } = require('sequelize/lib/index-hints');
+const http = require('http')
 const server = http.createServer(app)
 const io = require('socket.io')(server, { cors: { origin: '*' } })
 

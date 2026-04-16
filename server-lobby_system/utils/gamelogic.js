@@ -65,7 +65,7 @@ module.exports = function(io){
                 callback({success: true, gameID: game.gameID})
 
             }catch(error){
-                console.error(error)
+                console.error('Error in joining game', error)
                 callback({success: false})
             }
         })
@@ -89,8 +89,25 @@ module.exports = function(io){
 
 
             }catch(error){
-                console.error(error)
+                console.error('Error in joining game', error)
                 callback({success: false})
+            }
+        })
+
+        socket.on('getGameDetails', async (gameID, callback) => {
+            try{
+                const game = await Games.findByPk(gameID, {
+                    attributes: ['player1', 'player2', 'status', 'code']
+                })
+
+                if(!game){
+                    return callback({success: false, message: 'Game does not exist'})
+                }
+
+                callback({success: true, gameDetails: game.toJSON()})
+            }catch(error){
+                console.error('Error in fetching game details', error)
+                callback({success: false, message: error})
             }
         })
     })
