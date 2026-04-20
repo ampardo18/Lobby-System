@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useState, useRef } from 'react'
 import '../styles/global.css'
 import profileIcon from '../assets/profile-icon.png'
-import { io } from 'socket.io-client'
 import { ArrowRightLeft } from "lucide-react"
+import { getSocket } from '../utils/socket'
 
 
 function Battleship(){
@@ -21,15 +21,10 @@ function Battleship(){
 
     useEffect(() => {
         const token = localStorage.getItem('token')
-        if(!token) return
+        if (!token) return
 
-        socketRef.current = io(import.meta.env.VITE_PUBLIC_HOST, {
-            auth: { token }
-        })
-
-        socketRef.current.on('connection', () => {
-            console.log('Socket succesffuly connected: ', socketRef.current.id)
-        })
+        const socket = getSocket(token)
+        socketRef.current = socket
     }, [])
 
     useEffect(() => {
@@ -49,6 +44,31 @@ function Battleship(){
     }, [])
 
     useEffect(() => {
+        if (!user || !socketRef.current) return
+
+        const socket = socketRef.current
+
+        const handleListGames = (gameList: any) => {
+            setGames(gameList)
+        }
+
+        socket.on('listGames', handleListGames)
+
+        if (socket.connected) {
+            socket.emit('getGameList')
+        } else {
+            socket.on('connect', () => {
+                socket.emit('getGameList')
+            })
+        }
+
+        return () => {
+            socket.off('listGames', handleListGames)
+            socket.off('connect')
+        }
+    }, [user])
+
+    useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             const target = event.target as Node
             const clickedInsideProfile = profileRef.current?.contains(target)
@@ -62,15 +82,6 @@ function Battleship(){
         document.addEventListener('mousedown', handleOutsideClick)
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick)
-        }
-    }, [])
-
-    useEffect(() => {
-        socketRef.current?.on('listGames', (gamesList: {gameID: string; player1: string; player2: string; turn: string; status: string; winner: string | null}[]) => {
-            setGames(gamesList)
-        })
-        return () => {
-            socketRef.current?.off('listGames')
         }
     }, [])
 

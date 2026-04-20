@@ -21,7 +21,7 @@ module.exports = function(io){
             io.emit('listGames', gameList)
         }
     }
-    io.on('connection', (socket) => {
+    io.on('connect', (socket) => {
         
         console.log('User connected: ', socket.user.userID)
         broadcastGameList(socket)
@@ -61,7 +61,7 @@ module.exports = function(io){
                 await game.save()
                 socket.join(game.gameID)
                 await broadcastGameList()
-                io.to(game.gameID).emit('gameStart', { gameID: game.gameID, player1: game.player1, player2: game.player2 })
+                io.to(game.gameID).emit('gameStart', { gameID: game.gameID, player1: game.player1, player2: game.player2, turn: game.turn })
                 callback({success: true, gameID: game.gameID})
 
             }catch(error){
@@ -97,7 +97,7 @@ module.exports = function(io){
         socket.on('getGameDetails', async (gameID, callback) => {
             try{
                 const game = await Games.findByPk(gameID, {
-                    attributes: ['player1', 'player2', 'status', 'code']
+                    attributes: ['player1', 'player2', 'status', 'code', 'turn']
                 })
 
                 if(!game){
@@ -109,6 +109,21 @@ module.exports = function(io){
                 console.error('Error in fetching game details', error)
                 callback({success: false, message: error})
             }
+        })
+
+        socket.on('getGameList', async (callback) => {
+            const games = await Games.findAll()
+            const gameList = games.map(game => ({
+                gameID: game.gameID,
+                player1: game.player1,
+                player2: game.player2,
+                status: game.status,
+                winner: game.winner,
+                turn: game.turn
+            }))
+
+            socket.emit('listGames', gameList)
+            if (callback) callback({ success: true, gameList })
         })
     })
 }

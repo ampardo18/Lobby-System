@@ -1,20 +1,29 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
-import { io } from 'socket.io-client'
+import { getSocket } from '../utils/socket'
 
 function Game(){
     const { id } = useParams()
     const navigate = useNavigate()
-    const [ gameDetails, setGameDetails ] = useState<{player1: string; player2: string; status: string; code: string} | null>(null)
+    const [ gameDetails, setGameDetails ] = useState<{player1: string; player2: string; status: string; code: string; turn: string} | null>(null)
+    const [ user, setUser ] = useState<{username: string} | null>(null)
     const [ selected, setSelected ] = useState<number[]>([])
+    const [ canPlaceShips, setCanPlaceShips ] = useState(false)
+
+    const token = localStorage.getItem('token')
+    if(!token) return
+    const socket = getSocket(token)
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        if(!token) return
-        const socket = io(import.meta.env.VITE_PUBLIC_HOST, {
-            auth: { token }
+        fetch(`${import.meta.env.VITE_PUBLIC_HOST}/user`, {
+            headers: { Authorization: `Bearer ${token}` }
         })
+        .then(response => response.json())
+        .then(data => setUser(data))
+    }, [])
+
+    useEffect(() => {
         socket.emit('getGameDetails', id, (response: {success: boolean; gameDetails?: typeof gameDetails; message?: string}) => {
             if(response.success && response.gameDetails){
                 setGameDetails(response.gameDetails)
@@ -23,6 +32,17 @@ function Game(){
             }
         })
     }, [id])
+
+    useEffect(() => {
+        socket.on('gameStart', (gameStartData: { gameID: string; player1: string; player2: string; turn: string}) => {
+            console.log('Game started successfully: ', gameStartData)
+            if(gameStartData.gameID === id && gameStartData.turn === 'player1' && user?.username === gameStartData.player1 && gameDetails?.status === 'Playing'){
+                setCanPlaceShips(true)
+            }
+        })
+
+        socket.off('gameStart')
+    })
 
     const toggleCell = (index: number) => {
         setSelected(prev => 
@@ -39,6 +59,14 @@ function Game(){
                 <h1 className="font-bold text-2xl">{gameDetails?.player1} vs {gameDetails?.player2}</h1>
             </header>
             <div className="flex flex-col flex-1 items-center justify-center gap-4">
+                {gameDetails?.status === 'Playing' && (
+                    <h2 className="text-sm text-black font-bold">
+                        {user?.username === (gameDetails.turn === 'player 1' ? gameDetails.player1 : gameDetails.player2)
+                        ? 'It is your turn!'
+                        : `It is your opponent's turn!`
+                        }
+                    </h2>
+                )}
                 <div className="grid grid-cols-5 gap-1">
                     {Array.from({length: 5 * 5}).map((_, index) => (
                         <div 
